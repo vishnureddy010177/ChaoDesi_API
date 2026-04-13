@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\net8.0\ChaoDesi.Application.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net8.0\ChaoDesi.Application.GlobalUsings.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net8.0\ChaoDesi.Application.deps.json" />
+    <Content Include="obj\ChaoDesi.Application.csproj.nuget.dgspec.json" />
+    <Content Include="obj\Debug\net8.0\ChaoDesi.Application.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\project.assets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChaoDesi.Domain\ChaoDesi.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Features\Ads\" />
+    <Folder Include="Features\AskBoard\" />
+    <Folder Include="Features\Auth\" />
+    <Folder Include="Features\Banners\" />
+    <Folder Include="Features\BusinessListings\" />
+    <Folder Include="Features\Classifieds\" />
+    <Folder Include="Features\CMS\" />
+    <Folder Include="Features\ConnectIndia\" />
+    <Folder Include="Features\DIVTV\" />
+    <Folder Include="Features\DVite\" />
+    <Folder Include="Features\Events\" />
+    <Folder Include="Features\Groups\" />
+    <Folder Include="Features\Jobs\" />
+    <Folder Include="Features\Memberships\" />
+    <Folder Include="Features\Nonprofit\" />
+    <Folder Include="Features\Notifications\" />
+    <Folder Include="Features\RealEstate\" />
+    <Folder Include="Features\Reports\" />
+    <Folder Include="Features\Restaurants\" />
+    <Folder Include="Features\Roles\" />
+    <Folder Include="Features\Roommates\" />
+    <Folder Include="Features\Settings\" />
+    <Folder Include="Features\Travel\" />
+    <Folder Include="Features\Users\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net8.0\ChaoDesi.Application.dll" />
+    <None Include="bin\Debug\net8.0\ChaoDesi.Application.pdb" />
+    <None Include="bin\Debug\net8.0\ChaoDesi.Domain.dll" />
+    <None Include="bin\Debug\net8.0\ChaoDesi.Domain.pdb" />
+    <None Include="obj\ChaoDesi.Application.csproj.nuget.g.props" />
+    <None Include="obj\ChaoDesi.Application.csproj.nuget.g.targets" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.06F1211D.Up2Date" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.assets.cache" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.dll" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\Debug\net8.0\ChaoDesi.Application.pdb" />
+    <None Include="obj\Debug\net8.0\refint\ChaoDesi.Application.dll" />
+    <None Include="obj\Debug\net8.0\ref\ChaoDesi.Application.dll" />
+    <None Include="obj\project.nuget.cache" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
