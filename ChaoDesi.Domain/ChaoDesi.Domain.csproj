@@ -1,46 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
-    <Compile Include="obj\Debug\net8.0\ChaoDesi.Domain.AssemblyInfo.cs" />
-    <Compile Include="obj\Debug\net8.0\ChaoDesi.Domain.GlobalUsings.g.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="bin\Debug\net8.0\ChaoDesi.Domain.deps.json" />
-    <Content Include="obj\ChaoDesi.Domain.csproj.nuget.dgspec.json" />
-    <Content Include="obj\Debug\net8.0\ChaoDesi.Domain.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\project.assets.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="bin\Debug\net8.0\ChaoDesi.Domain.dll" />
-    <None Include="bin\Debug\net8.0\ChaoDesi.Domain.pdb" />
-    <None Include="obj\ChaoDesi.Domain.csproj.nuget.g.props" />
-    <None Include="obj\ChaoDesi.Domain.csproj.nuget.g.targets" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Domain.AssemblyInfoInputs.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Domain.assets.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Domain.csproj.CoreCompileInputs.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Domain.dll" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Domain.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Domain.pdb" />
-    <None Include="obj\Debug\net8.0\refint\ChaoDesi.Domain.dll" />
-    <None Include="obj\Debug\net8.0\ref\ChaoDesi.Domain.dll" />
-    <None Include="obj\project.nuget.cache" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Constants\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Enums\" />
-    <Folder Include="ValueObjects\" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
 </Project>

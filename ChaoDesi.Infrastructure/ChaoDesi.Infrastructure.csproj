@@ -1,51 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <Compile Include="obj\Debug\net8.0\.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" />
-    <Compile Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.AssemblyInfo.cs" />
-    <Compile Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.GlobalUsings.g.cs" />
-    <Compile Include="obj\Debug\net8.0\EFCoreSqlServerNetTopologySuite.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="bin\Debug\net8.0\ChaoDesi.Infrastructure.deps.json" />
-    <Content Include="bin\Debug\net8.0\ChaoDesi.Infrastructure.runtimeconfig.json" />
-    <Content Include="obj\ChaoDesi.Infrastructure.csproj.nuget.dgspec.json" />
-    <Content Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.csproj.FileListAbsolute.txt" />
-    <Content Include="obj\project.assets.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="bin\Debug\net8.0\ChaoDesi.Application.dll" />
-    <None Include="bin\Debug\net8.0\ChaoDesi.Application.pdb" />
-    <None Include="bin\Debug\net8.0\ChaoDesi.Domain.dll" />
-    <None Include="bin\Debug\net8.0\ChaoDesi.Domain.pdb" />
-    <None Include="bin\Debug\net8.0\ChaoDesi.Infrastructure.dll" />
-    <None Include="bin\Debug\net8.0\ChaoDesi.Infrastructure.pdb" />
-    <None Include="obj\ChaoDesi.Infrastructure.csproj.nuget.g.props" />
-    <None Include="obj\ChaoDesi.Infrastructure.csproj.nuget.g.targets" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.BB63E484.Up2Date" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.AssemblyInfoInputs.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.assets.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.csproj.AssemblyReference.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.csproj.CoreCompileInputs.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.dll" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.genruntimeconfig.cache" />
-    <None Include="obj\Debug\net8.0\ChaoDesi.Infrastructure.pdb" />
-    <None Include="obj\Debug\net8.0\refint\ChaoDesi.Infrastructure.dll" />
-    <None Include="obj\Debug\net8.0\ref\ChaoDesi.Infrastructure.dll" />
-    <None Include="obj\project.nuget.cache" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ChaoDesi.Application\ChaoDesi.Application.csproj" />
     <ProjectReference Include="..\ChaoDesi.Domain\ChaoDesi.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="MailKit" Version="4.16.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.*">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -62,22 +29,7 @@
     <PackageReference Include="StackExchange.Redis" Version="2.12.14" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="BackgroundJobs\" />
-    <Folder Include="Caching\" />
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Identity\" />
-    <Folder Include="Integrations\AI\" />
-    <Folder Include="Integrations\Email\" />
-    <Folder Include="Integrations\Maps\" />
-    <Folder Include="Integrations\Payments\" />
-    <Folder Include="Integrations\Sms\" />
-    <Folder Include="Integrations\Storage\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Seed\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
+  
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
