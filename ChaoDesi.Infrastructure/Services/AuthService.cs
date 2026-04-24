@@ -8,12 +8,17 @@ using System.Text.RegularExpressions;
 
 namespace ChaoDesi.Infrastructure.Services;
 
+
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _dbContext;
     private readonly IPasswordService _passwordService;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IEmailService _emailService;
+
+    private static readonly Random _random = new Random();
+    private const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 
     public AuthService(
     AppDbContext dbContext,
@@ -26,7 +31,11 @@ public class AuthService : IAuthService
         _jwtTokenService = jwtTokenService;
         _emailService = emailService;
     }
-
+    public static string GenerateCustomerCode(int length = 10)
+    {
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[_random.Next(s.Length)]).ToArray());
+    }
 
     public async Task<AuthResponse> VerifyOtpAsync(VerifyOtpRequest request)
     {
@@ -141,7 +150,7 @@ public class AuthService : IAuthService
         var user = new User
         {
             UserTypeId = finalUserTypeId,
-            CustomerCode = "TEMP",
+            CustomerCode = GenerateCustomerCode(),
             FullName = request.FullName,
             Email = request.Email,
             MobileNumber = request.MobileNumber,
@@ -179,6 +188,7 @@ public class AuthService : IAuthService
             CustomerCode = user.CustomerCode
         };
     }
+   
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
         var loginId = request.LoginId.Trim();
