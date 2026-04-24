@@ -1,4 +1,6 @@
-﻿public class ResetPasswordRequest
+namespace ChaoDesi.Application.Features.Auth.Requests;
+
+public class ResetPasswordRequest
 {
     public string LoginId { get; set; } = string.Empty;
     public string OtpCode { get; set; } = string.Empty;

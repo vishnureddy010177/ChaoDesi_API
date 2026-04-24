@@ -1,6 +1,5 @@
 using ChaoDesi.Application.Features.Auth.Requests;
 using ChaoDesi.Application.Interfaces;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChaoDesi.API.Controllers;

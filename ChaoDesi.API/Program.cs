@@ -1,6 +1,7 @@
 using ChaoDesi.Application.Interfaces;
 using ChaoDesi.Infrastructure.Data;
 using ChaoDesi.Infrastructure.Services;
+using ChaoDesi.API.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -9,7 +10,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullableDateTimeConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -52,6 +57,7 @@ builder.Services.Configure<EmailSettings>(
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -74,7 +80,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPortalAccess", policy =>
+        policy.RequireRole("ADMIN", "SUPER_ADMIN"));
+
+    options.AddPolicy("SuperAdminOnly", policy =>
+        policy.RequireRole("SUPER_ADMIN"));
+});
 
 builder.Services.AddCors(options =>
 {

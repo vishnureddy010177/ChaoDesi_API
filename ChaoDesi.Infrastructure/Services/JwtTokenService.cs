@@ -17,18 +17,26 @@ public class JwtTokenService : IJwtTokenService
         _configuration = configuration;
     }
 
-    public string GenerateToken(User user)
+    public string GenerateToken(User user, string userTypeCode)
     {
         var key = _configuration["Jwt:Key"]!;
         var issuer = _configuration["Jwt:Issuer"];
         var audience = _configuration["Jwt:Audience"];
+        var normalizedUserType = string.IsNullOrWhiteSpace(userTypeCode) ? "CUSTOMER" : userTypeCode.Trim().ToUpperInvariant();
 
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.FullName),
-            new Claim("customerCode", user.CustomerCode)
+            new Claim("customerCode", user.CustomerCode),
+            new Claim("userType", normalizedUserType),
+            new Claim(ClaimTypes.Role, normalizedUserType)
         };
+
+        if (user.UserTypeId.HasValue)
+        {
+            claims.Add(new Claim("userTypeId", user.UserTypeId.Value.ToString()));
+        }
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

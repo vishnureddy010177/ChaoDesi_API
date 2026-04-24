@@ -4,8 +4,6 @@ using ChaoDesi.Application.Interfaces;
 using ChaoDesi.Domain.Entities;
 using ChaoDesi.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto.Generators;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace ChaoDesi.Infrastructure.Services;
@@ -183,11 +181,13 @@ public class AuthService : IAuthService
     }
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
+        var loginId = request.LoginId.Trim();
+
         var user = await _dbContext.Users
             .FirstOrDefaultAsync(x =>
                 !x.IsDeleted &&
                 x.IsActive &&
-                (x.Email == request.LoginId || x.MobileNumber == request.LoginId));
+                (x.Email == loginId || x.MobileNumber == loginId));
 
         if (user == null)
         {
@@ -210,7 +210,9 @@ public class AuthService : IAuthService
         user.LastLoginAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync();
 
-        var token = _jwtTokenService.GenerateToken(user);
+        var userType = await ResolveUserTypeCodeAsync(user.UserTypeId);
+        var token = _jwtTokenService.GenerateToken(user, userType);
+        var redirectUrl = IsAdminUserType(userType) ? "/admin/profile" : "/user-info";
 
         return new AuthResponse
         {
@@ -219,9 +221,10 @@ public class AuthService : IAuthService
             Token = token,
             UserId = user.Id,
             CustomerCode = user.CustomerCode,
+            Email = user.Email,
             FullName = user.FullName,
-            UserType = "CUSTOMER",
-            RedirectUrl = "/user-info"
+            UserType = userType,
+            RedirectUrl = redirectUrl
         };
     }
    
@@ -233,11 +236,25 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
         return new AuthResponse
         {
             Success = false,
-            Message = "Email is required."
+            Message = "Email or mobile number is required."
         };
     }
 
-    if (!IsValidEmail(request.LoginId))
+    var loginId = request.LoginId.Trim();
+    var purpose = request.Purpose.Trim();
+    var isRegisterOtp = purpose.Equals("Register", StringComparison.OrdinalIgnoreCase);
+    var isForgotPasswordOtp = purpose.Equals("ForgotPassword", StringComparison.OrdinalIgnoreCase);
+
+    if (!isRegisterOtp && !isForgotPasswordOtp)
+    {
+        return new AuthResponse
+        {
+            Success = false,
+            Message = "Invalid OTP purpose."
+        };
+    }
+
+    if (isRegisterOtp && !IsValidEmail(loginId))
     {
         return new AuthResponse
         {
@@ -246,9 +263,11 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
         };
     }
 
-    var user = _dbContext.Users.FirstOrDefault(a => a.Email == request.LoginId);
+    var user = await _dbContext.Users.FirstOrDefaultAsync(a =>
+        !a.IsDeleted &&
+        (a.Email == loginId || a.MobileNumber == loginId));
 
-    if (user != null && request.Purpose == "Register")
+    if (user != null && isRegisterOtp)
     {
         return new AuthResponse
         {
@@ -257,14 +276,35 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
         };
     }
 
+    if (user == null && isForgotPasswordOtp)
+    {
+        return new AuthResponse
+        {
+            Success = false,
+            Message = "User not found."
+        };
+    }
+
+    var recipientEmail = isForgotPasswordOtp ? user?.Email : loginId;
+
+    if (string.IsNullOrWhiteSpace(recipientEmail) || !IsValidEmail(recipientEmail))
+    {
+        return new AuthResponse
+        {
+            Success = false,
+            Message = "A valid email address is required to send OTP."
+        };
+    }
+
     var random = new Random();
     var otp = random.Next(1000, 9999).ToString();
 
     var entity = new OtpVerification
     {
-        LoginId = request.LoginId,
+        UserId = user?.Id,
+        LoginId = loginId,
         OtpCode = otp,
-        Purpose = request.Purpose,
+        Purpose = purpose,
         IsVerified = false,
         ExpiresAt = DateTime.UtcNow.AddMinutes(10),
         CreatedAt = DateTime.UtcNow
@@ -282,7 +322,7 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
         <p>This OTP will expire in 10 minutes.</p>
     </div>";
 
-    await _emailService.SendEmailAsync(request.LoginId, subject, body);
+    await _emailService.SendEmailAsync(recipientEmail, subject, body);
 
     return new AuthResponse
     {
@@ -349,6 +389,9 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
 
     public async Task<AuthResponse> ResetPasswordAsync(ResetPasswordRequest request)
     {
+        var loginId = request.LoginId.Trim();
+        var otpCode = request.OtpCode.Trim();
+
         if (request.NewPassword != request.ConfirmPassword)
         {
             return new AuthResponse
@@ -360,10 +403,11 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
 
         var otpRecord = await _dbContext.OtpVerifications
             .Where(x =>
-                x.LoginId == request.LoginId &&
-                x.OtpCode == request.OtpCode &&
+                x.LoginId == loginId &&
+                x.OtpCode == otpCode &&
                 x.Purpose == "ForgotPassword" &&
-                x.IsVerified)
+                x.IsVerified &&
+                x.ExpiresAt >= DateTime.UtcNow)
             .OrderByDescending(x => x.Id)
             .FirstOrDefaultAsync();
 
@@ -377,7 +421,9 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
         }
 
         var user = await _dbContext.Users
-            .FirstOrDefaultAsync(x => x.Email == request.LoginId || x.MobileNumber == request.LoginId);
+            .FirstOrDefaultAsync(x =>
+                !x.IsDeleted &&
+                (x.Email == loginId || x.MobileNumber == loginId));
 
         if (user == null)
         {
@@ -389,6 +435,8 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
         }
 
         user.PasswordHash = _passwordService.HashPassword(request.NewPassword);
+        user.UpdatedAt = DateTime.UtcNow;
+        otpRecord.IsVerified = false;
         await _dbContext.SaveChangesAsync();
 
         return new AuthResponse
@@ -396,5 +444,26 @@ public async Task<AuthResponse> SendOtpAsync(SendOtpRequest request)
             Success = true,
             Message = "Password reset successful."
         };
+    }
+
+    private async Task<string> ResolveUserTypeCodeAsync(int? userTypeId)
+    {
+        if (!userTypeId.HasValue)
+        {
+            return "CUSTOMER";
+        }
+
+        var code = await _dbContext.UserTypes
+            .Where(x => x.Id == userTypeId.Value)
+            .Select(x => x.Code)
+            .FirstOrDefaultAsync();
+
+        return string.IsNullOrWhiteSpace(code) ? "CUSTOMER" : code;
+    }
+
+    private static bool IsAdminUserType(string userType)
+    {
+        return userType.Equals("ADMIN", StringComparison.OrdinalIgnoreCase)
+            || userType.Equals("SUPER_ADMIN", StringComparison.OrdinalIgnoreCase);
     }
 }
